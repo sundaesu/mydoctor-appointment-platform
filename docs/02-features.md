@@ -18,17 +18,25 @@ Clinic operational interface for registration, booking, queue management, and da
 
 ### Appointment
 
-Represents a scheduled relationship between a patient, doctor, clinic, and date/time.
+Represents a planned or scheduled visit between a patient, doctor, clinic, and date/time.
 
 ### Token
 
-Represents a patient's position in a clinic's queue. A scheduled appointment may produce a token, and a walk-in patient may receive a token without a pre-booked appointment.
+Represents a patient's operational position in a clinic session or queue. A scheduled appointment may produce a token when the patient arrives or checks in, and a walk-in patient may receive a token without a pre-booked appointment.
 
 ### Appointment and Token Relationship
 
-- Online appointment -> appointment -> queue token
-- Phone appointment -> appointment -> queue token
-- Walk-in -> queue token
+- Appointment and queue token are separate concepts.
+- Appointment lifecycle and queue-token lifecycle are independent.
+- Queue state represents what is happening operationally inside the clinic.
+
+Examples:
+
+- Online appointment -> patient books an appointment -> patient arrives/checks in -> queue token -> consultation
+- Phone appointment -> receptionist books an appointment -> patient arrives/checks in -> queue token -> consultation
+- Walk-in -> no appointment -> queue token -> consultation
+- Cancelled appointment -> appointment ends as cancelled -> any existing queue token is cancelled or removed as a separate operational action
+- Patient no-show -> appointment may move to no-show according to clinic policy -> any existing queue token is marked no-show or removed as a separate operational action
 
 ## Appointment Lifecycle
 
@@ -38,7 +46,6 @@ The initial lifecycle is proposed and will be finalized during architecture desi
 BOOKED
 → CONFIRMED
 → ARRIVED
-→ WAITING
 → CONSULTING
 → COMPLETED
 ```
@@ -48,9 +55,11 @@ Possible alternate states:
 ```text
 BOOKED → CANCELLED
 CONFIRMED → CANCELLED
-ARRIVED → NO_SHOW
-WAITING → SKIPPED
+BOOKED → NO_SHOW
+CONFIRMED → NO_SHOW
 ```
+
+Queue-token lifecycle is separate from appointment lifecycle and is intentionally not defined here.
 
 ## Product Principles
 

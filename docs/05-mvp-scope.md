@@ -12,8 +12,11 @@
 - Doctor availability
 - Appointment booking
 - Appointment confirmation
+- Patient check-in / arrival
 - Token generation
+- Walk-in token generation
 - Live queue status
+- Basic estimated waiting information
 - Appointment history
 - Notifications
 - Basic family member support
@@ -52,6 +55,7 @@
 - Queue management
 - Doctor availability
 - Today's appointments
+- Basic estimated waiting information
 - Basic reports and statistics
 
 ## Explicitly Out of MVP
@@ -74,3 +78,5 @@ These are future features, not MVP:
 ## MVP Intent
 
 The MVP should stay focused on validation of the core appointment and queue experience rather than becoming a broad healthcare suite too early.
+
+Advanced queue optimization, prioritization, and complex ordering rules are not part of MVP.

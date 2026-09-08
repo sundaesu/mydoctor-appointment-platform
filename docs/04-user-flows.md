@@ -10,9 +10,11 @@ Patient
 → Select date/time
 → Confirm appointment
 → Receive confirmation
-→ Receive token where applicable
-→ Track queue
 → Visit clinic
+→ Arrival / check-in
+→ Receive queue token where applicable
+→ Track queue
+→ Consultation
 ```
 
 ## Workflow 2 - Patient Books Through Receptionist
@@ -24,6 +26,9 @@ Patient calls clinic
 → Receptionist books appointment
 → System creates appointment
 → Patient receives confirmation
+→ Patient arrives / checks in
+→ Receptionist generates queue token where applicable
+→ Consultation
 ```
 
 ## Workflow 3 - Walk-In Patient
@@ -36,7 +41,6 @@ Patient arrives at clinic
 → Patient waits
 → Doctor calls next
 → Consultation
-→ Appointment/token completed
 ```
 
 ## Workflow 4 - Doctor Manages Queue
@@ -57,6 +61,22 @@ Doctor becomes delayed
 → Doctor/receptionist updates availability/status
 → Queue timing is recalculated
 → Patients are notified
+```
+
+## Workflow 6 - Appointment Cancellation
+
+```text
+Appointment exists
+→ Appointment is cancelled
+→ If a queue token exists, token cancellation or queue removal is handled as a separate operational action
+```
+
+## Workflow 7 - Patient No-Show
+
+```text
+Patient does not arrive
+→ Appointment may be marked no-show according to clinic policy
+→ If a queue token exists, it may also be marked no-show or removed as a separate operational action
 ```
 
 ## Flow Notes
