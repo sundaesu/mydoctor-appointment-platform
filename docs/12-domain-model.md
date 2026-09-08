@@ -202,13 +202,12 @@ Conceptually, an appointment should carry:
 
 ### Appointment Lifecycle
 
-The existing documentation suggests the following lifecycle:
+The conceptual appointment lifecycle is:
 
 ```text
 BOOKED
 → CONFIRMED
-→ ARRIVED
-→ CONSULTING
+→ ARRIVED / CHECKED_IN
 → COMPLETED
 ```
 
@@ -221,12 +220,7 @@ BOOKED or CONFIRMED → NO_SHOW
 
 ### Appointment Status Assessment
 
-`PROPOSED`: the status set above is useful as a starting point, but the model should be careful not to overload appointment status with queue behavior. Queue waiting, skipping, holding, and recalling should belong to the queue token lifecycle instead.
-
-My recommendation is:
-
-- keep appointment status focused on booking and visit lifecycle
-- use queue token status for live movement through the clinic
+`DECIDED`: appointment status stays focused on the booking and visit lifecycle. Queue waiting, skipping, holding, recalling, and other live operational movement belong to the queue token lifecycle instead.
 
 That separation better matches real clinics and reduces ambiguity.
 
@@ -254,7 +248,7 @@ An appointment is a scheduled commitment. A queue token is the live order in the
 
 ### MVP Principle
 
-`PROPOSED`: not every appointment needs a token, and not every token needs an appointment. The system should support both paths.
+`DECIDED`: not every appointment needs a token, and not every token needs an appointment. The system should support both paths.
 
 ### Concrete Examples
 
@@ -270,7 +264,7 @@ The queue is the ordered list of patients waiting to be seen in a specific opera
 
 ### Queue Scope
 
-`PROPOSED`: the simplest viable MVP queue is doctor-session-based with clinic context. In practice, that means a queue belongs to a clinic and a specific doctor session on a specific day or service period.
+`DECIDED`: the MVP queue is scoped to Clinic + Doctor + Session. In practice, that means a queue belongs to a clinic and a specific doctor session on a specific day or service period.
 
 This gives us:
 
@@ -280,11 +274,11 @@ This gives us:
 
 ### Multi-Doctor Clinics
 
-If a clinic has multiple doctors, each doctor should generally have their own queue/session. The clinic view can show all of them together, but the operational ordering stays per doctor session unless a future design chooses otherwise.
+If a clinic has multiple doctors, each doctor should have their own queue/session for MVP. The clinic view can still show them together, but the operational ordering stays per doctor session.
 
 ### Token Numbering
 
-`PROPOSED`: token numbers should reset daily within the relevant queue context. The simplest rule is that token numbers are unique within a doctor-session queue, not globally across the whole platform.
+`DECIDED`: token numbers should reset within the relevant doctor-session queue. The simplest rule is that token numbers are unique within a doctor-session queue, not globally across the whole platform.
 
 ### Queue Status and Contents
 
@@ -329,7 +323,7 @@ WAITING or CALLED → NO_SHOW
 - `NO_SHOW` means the patient did not appear in time
 - `CANCELLED` means the visit was intentionally cancelled
 
-`PROPOSED`: keep `HOLD` and `RECALLED` as operational states or actions, but do not overcomplicate them in MVP implementation.
+`DECIDED`: keep `HOLD` and `RECALLED` as operational states or actions, but do not overcomplicate them in MVP implementation.
 
 ## Queue Business Rules
 
@@ -379,11 +373,11 @@ If a patient leaves before being seen, the clinic should record that operational
 
 ### Emergency or Priority Patients
 
-`PROPOSED`: handle emergency or priority cases through simple manual override in MVP rather than building a complex prioritization engine.
+`DECIDED`: handle emergency or priority cases through simple manual override in MVP rather than building a complex prioritization engine.
 
 ### Manual Queue Reordering
 
-`PROPOSED`: allow only limited manual overrides by authorized staff. Any override should be auditable.
+`DECIDED`: allow only limited manual overrides by authorized staff. Any override should be auditable.
 
 ### MVP Queue Philosophy
 
@@ -578,28 +572,32 @@ flowchart TD
 - The architecture direction starts with a modular monolith
 - PostgreSQL is the proposed source of truth
 - The platform must support multi-clinic operation from the beginning
+- Queue scope is Clinic + Doctor + Session for MVP
+- Appointment and queue token are separate lifecycles
+- Booking does not create a queue token
+- Check-in or arrival creates the queue token
+- Walk-ins may receive tokens without appointments
+- Token numbering resets within the doctor-session queue
+- Queue ordering uses appointment eligibility + actual check-in time
+- Appointment status must stay separate from queue-token status
 
 ### PROPOSED
 
 - One user account can carry multiple roles
 - A clinic branch is optional and should be used when a clinic has more than one physical location
-- The simplest queue model is doctor-session-based with clinic context
-- Token numbering should reset daily within the queue context
-- Appointment and queue token should remain separate concepts
-- Queue lifecycle should be distinct from appointment lifecycle
 - Patient identity should be global while operational records remain clinic-scoped
-- Manual queue overrides should be limited and auditable
 
 ### OPEN
 
 - Fixed-duration versus flexible appointment slots
 - Public versus partial queue visibility
-- Emergency and priority handling
-- Queue reordering policy
-- Exact late-arrival and no-show thresholds
-- Token numbering policy across clinics and branches
-- Patient identity matching across clinics
-- How much data different roles can see before and after check-in
+- Can a patient transfer between clinics during the same episode?
+- Should token numbers be public or partially hidden?
+- Should every clinic use the queue system in the same way, or should queue mode be configurable?
+- Should a patient identity be merged across clinics automatically, or only by explicit matching?
+- How much data can a receptionist view about a patient before check-in?
+- What happens when a doctor starts late?
+- What happens when a patient arrives extremely late?
 
 ## Recommended Documentation Updates
 
@@ -614,6 +612,6 @@ The following documentation updates are recommended after this model is accepted
 
 1. What I created: a conceptual domain model for the MVP in `docs/12-domain-model.md`
 2. Important domain decisions: multi-role users, clinic as tenant boundary, doctor-clinic many-to-many relationships, and a clear split between appointment and queue token
-3. Open questions: queue ordering, emergency handling, late arrivals, token numbering, and queue visibility
-4. Contradictions found: the existing docs treat appointment lifecycle and queue progression a little too similarly, so this model recommends separating them conceptually
+3. Open questions: appointment slot sizing, queue visibility, cross-clinic identity matching, queue mode configurability, and a few patient-experience details
+4. Contradictions found: the existing docs treated appointment lifecycle and queue progression a little too similarly, so this model now separates them conceptually
 5. Recommended next documentation task: tighten the appointment/token language in `docs/02-features.md` and `docs/05-mvp-scope.md`

@@ -51,7 +51,7 @@ This keeps the MVP understandable for clinic staff and patients without introduc
 
 A patient who arrives before their appointment time may check in, but early arrival does not automatically give them priority over patients who are already eligible to be served.
 
-Why this is the recommended policy:
+Why this is the decision:
 
 - it prevents early check-ins from jumping ahead of patients who are already valid for service
 - it keeps appointment timing meaningful without forcing a complex queue algorithm
@@ -61,7 +61,7 @@ Why this is the recommended policy:
 
 **DECIDED**
 
-Recommended MVP behavior:
+MVP Decision:
 
 - appointments still have scheduled times
 - use a 15-minute grace period as the initial MVP default
@@ -85,7 +85,7 @@ The initial no-show threshold should remain a clinic policy/configuration decisi
 
 **DECIDED**
 
-Recommended MVP behavior:
+MVP Decision:
 
 - patient is called
 - patient does not respond
@@ -118,7 +118,7 @@ The system should also support a controlled staff workflow for legitimate except
 
 **DECIDED**
 
-Recommended MVP ordering model:
+MVP Decision:
 
 **Appointment eligibility + arrival/check-in order**
 
@@ -129,7 +129,7 @@ Meaning:
 - appointment patients do not automatically leap ahead of every walk-in simply because they have an appointment
 - later appointment times should not jump ahead of patients already waiting unless clinic policy explicitly allows it
 
-This is the recommended replacement for the earlier "checked-in appointments first, then walk-ins" wording.
+This is the finalized replacement for the earlier "checked-in appointments first, then walk-ins" wording.
 
 ### 11. Patient-Visible Queue Information
 
@@ -186,7 +186,7 @@ Rejected for MVP because it would be hard for staff to understand and too expens
 
 ## Reason
 
-The recommended policy keeps the product simple enough for private clinics while still respecting the meaning of appointments.
+This decision keeps the product simple enough for private clinics while still respecting the meaning of appointments.
 
 It also fits the observed scenario problems better than the earlier "appointments first" rule:
 

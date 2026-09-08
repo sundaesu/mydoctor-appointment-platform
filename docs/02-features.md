@@ -40,13 +40,12 @@ Examples:
 
 ## Appointment Lifecycle
 
-The initial lifecycle is proposed and will be finalized during architecture design.
+The conceptual appointment lifecycle is kept separate from queue-token lifecycle:
 
 ```text
 BOOKED
 → CONFIRMED
-→ ARRIVED
-→ CONSULTING
+→ ARRIVED / CHECKED_IN
 → COMPLETED
 ```
 

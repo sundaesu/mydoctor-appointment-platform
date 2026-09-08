@@ -38,7 +38,11 @@ Clinic Session / Queue domain
 Queue Token
 ```
 
-The clinic session may be doctor-specific or clinic-session-specific depending on the clinic operating model, but the important point is that queue state is the live clinic flow and not just a mirror of appointment lifecycle.
+For MVP, the queue is scoped to Clinic + Doctor + Session. A session is doctor-specific within a clinic, and the operational queue follows that scope.
+
+A whole-clinic queue can remain a future architectural possibility, but it is not the MVP model.
+
+The important point is that queue state is the live clinic flow and not just a mirror of appointment lifecycle.
 
 The backend should eventually handle:
 

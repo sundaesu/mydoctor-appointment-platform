@@ -22,4 +22,6 @@ Each ADR should eventually contain:
 
 ## Current Status
 
-No ADRs have been recorded yet.
+Recorded ADRs:
+
+- `ADR-001-mvp-queue-rules.md` - Finalized MVP baseline for queue behavior
